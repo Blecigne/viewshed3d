@@ -1,0 +1,17 @@
+Package: viewshed3d
+Title: Compute Viewshed in 3D point clouds of ecosystems
+Version: 3.0.0
+Authors@R: 
+    c(person(given = "Bastien",
+           family = "Lecigne",
+           role = c("aut", "cre"),
+           email = "lecignebastien@gmail.com",
+           comment = c(ORCID = "YOUR-ORCID-ID")),
+      person("Jan", "Eitel", role = "aut"))
+Description: A set of tools to compute viewshed in 3D from Terrestrial Laser Scanner data and prepare the data prior to visibility estimation.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
+Imports: 
+    data.table,raster,lidR,rgl,pracma,viridis,TreeLS,utils,nabor,sp
