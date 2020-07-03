@@ -36,13 +36,14 @@
 #' a similar portion of the 3d space.
 #'
 #' @references Malkin, Z. (2016). A new method to subdivide a spherical surface
-#' into equal-area cells. arXiv preprint arXiv:1612.03467.
+#' into equal-area cells. arXiv:1612.03467.
 #'
 #' @importFrom data.table := .N
 #'
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' #- import the tree_line_plot dataset
 #' file <- system.file("extdata", "tree_line_plot.laz", package="viewshed3d")
 #' tls <- lidR::readLAS(file)
@@ -56,7 +57,7 @@
 #'
 #'
 #' #- class ground and vegetation points
-#' class <- lidR::lasground(tls_clean, lidR::csf(rigidness = 1L,
+#' class <- lidR::classify_ground(tls_clean, lidR::csf(rigidness = 1L,
 #'                                               class_threshold = 0.2,
 #'                                               sloop_smooth = FALSE))
 #'
@@ -78,8 +79,7 @@
 #'                                     store_points = TRUE)
 #'
 #' #- 3D plot with visible points in white and non-visible points in darkgrey
-#' x=lidR::plot(view.data$points,add=TRUE,color="Visibility",
-#'              colorPalette = c("grey24","white"))
+#' x=lidR::plot(view.data$points,color="Visibility",colorPalette = c("grey24","white"))
 #'
 #' #- add animal position to the plot
 #' position=data.frame(X=center[1],Y=center[2],Z=center[3])
@@ -89,6 +89,7 @@
 #' #- plot the visibility as function of distance
 #' plot(view.data$visibility$r,view.data$visibility$visibility,
 #'      type="l",ylim=c(0,100),lwd=4)
+#'}
 #'
 visibility <- function(data,position,angular_res,scene_radius,store_points){
 

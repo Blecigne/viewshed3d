@@ -34,11 +34,6 @@
 #'   \item dowsampled by keeping one point within a 2 cm voxel
 #' }}
 #'
-#' @keywords 3D point cloud, Terrestrial Laser Scanner, Viewshed, Visibility, noise filter
-#'
-#' @author Bastien Lecigne (lecignebastien@gmail.com)
-#' @author Jan Eitel
-#'
 #' @docType package
 #' @name viewshed3d
 NULL

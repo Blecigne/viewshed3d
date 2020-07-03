@@ -22,21 +22,22 @@
 #'
 #' @note In most cases, a ground reconstruction should be performed before
 #' viewsheds computation. This can be done with
-#' the \code{\link[lidR]{lasground}} and \code{\link[lidR]{grid_terrain}}
-#' functions from the \code{\link[lidR]{lidR}} package.
+#' the \code{\link[lidR]{classify_ground}} and \code{\link[lidR]{grid_terrain}}
+#' functions from the \code{\link[lidR]{lidR-package}}.
 #'
 #' @details Sightline directions in each viewshed are computed from the method
 #' described by Malkin (2016). This ensures that every sightline explores
 #' a similar portion of the 3d space.
 #'
 #' @references Malkin, Z. (2016). A new method to subdivide a spherical surface
-#' into equal-area cells. arXiv preprint arXiv:1612.03467.
+#' into equal-area cells. arXiv:1612.03467.
 #'
 #' @importFrom data.table := .N
 #'
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' #- import the tree_line_plot dataset
 #' file = system.file("extdata", "tree_line_plot.laz", package="viewshed3d")
 #' tls = lidR::readLAS(file,select="xyz")
@@ -47,7 +48,7 @@
 #'
 #' #- RECONSTRUCT THE GROUND
 #' #- classify ground points
-#' class=lidR::lasground(tls_clean, lidR::csf(rigidness = 1L,
+#' class=lidR::classify_ground(tls_clean, lidR::csf(rigidness = 1L,
 #'                                            class_threshold = 0.1,
 #'                                            sloop_smooth = TRUE), FALSE)
 #'
@@ -79,7 +80,7 @@
 #' #- add the positions
 #' lidR::add_treetops3d(x,sp::SpatialPointsDataFrame(positions,positions),
 #'                      radius=0.5,col="red",add=TRUE)
-#'
+#'}
 viewsheds=function(data,positions,angular_res,vox_res,cut_off,pb){
 
   #- declare variables to pass CRAN check as suggested by data.table mainaitners
@@ -146,7 +147,7 @@ viewsheds=function(data,positions,angular_res,vox_res,cut_off,pb){
   data <- data[,1:3]
 
   #- COMPUTE VISIBILITY from each position
-  if(pb==T) prog <- utils::txtProgressBar(min=0,max=nrow(positions),style = 3)
+  if(pb==T) prog <- utils::txtProgressBar(min=0,max=nrow(positions),style = 3,width = 33)
   for(i in 1:nrow(positions)){
     if(pb==T) utils::setTxtProgressBar(prog, i)
 

@@ -16,12 +16,12 @@
 #'
 #' @details
 #' \subsection{\code{method = "quantile"}}{
-#' method = "quantile": the quantile-based method computes the distance of the k
+#' the quantile-based method computes the distance of the k
 #' nearest neighbours for each surveyed point and considers points that fall in
 #' the last user defined quantile as noise. If quantile is used as the filtering
 #' method, the default is set to = 0.999.}
 #' \subsection{\code{method = "sd"}}{
-#' method = "sd": the standard deviation-based method computes the average
+#' the standard deviation-based method computes the average
 #' distance of the k nearest neighbours of each surveyed point and considers
 #' points as noise if they are more than the average distance plus a number of
 #' times the standard deviation away from other surveyed points. The filter
@@ -29,7 +29,7 @@
 #' similar to the "SOR filter" available in
 #' \href{https://www.cloudcompare.org/doc/wiki/index.php?title=SOR_filter}{CloudCompare}.}
 #' \subsection{\code{method = "voxel"}}{
-#' method = "voxel": the voxel-based method considers surveyed points as noise if
+#' the voxel-based method considers surveyed points as noise if
 #' they are the only surveyed point within a user defined voxel volume. The
 #' \code{filter} parameter sets the voxel size (i.e., voxel side length).
 #' Default = 0.5.}
@@ -42,15 +42,16 @@
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' #- import the tree_line_plot dataset
 #' file <- system.file("extdata", "tree_line_plot.laz", package="viewshed3d")
-#' data <- lidR::readLAS(file,select="xyz")
+#' tls <- lidR::readLAS(file,select="xyz")
 #'
 #' #- remove duplicated points
-#' data <- lidR::lasfilterduplicates(data)
+#' tls <- lidR::filter_duplicates(tls)
 #'
 #' #- filter noise with the quantile base method
-#' data <- viewshed3d::denoise_scene(data,
+#' data <- viewshed3d::denoise_scene(tls,
 #'                                   method="quantile",
 #'                                   filter=0.999,
 #'                                   k=5,
@@ -59,7 +60,7 @@
 #' lidR::plot(data,color="Noise",colorPalette=c("white","red")) # plot
 #'
 #' #- filter noise with the standard deviation based method
-#' data <- viewshed3d::denoise_scene(data,
+#' data <- viewshed3d::denoise_scene(tls,
 #'                                   method="sd",
 #'                                   filter=4,
 #'                                   k=5,
@@ -68,12 +69,12 @@
 #' lidR::plot(data,color="Noise",colorPalette=c("white","red")) # plot
 #'
 #' #- filter noise with the voxel based method
-#' data <- viewshed3d::denoise_scene(data,
+#' data <- viewshed3d::denoise_scene(tls,
 #'                                   method="voxel",
 #'                                   filter=0.5,
 #'                                   store_noise = TRUE)
 #' lidR::plot(data,color="Noise",colorPalette=c("white","red")) # plot
-#'
+#'}
 denoise_scene = function(data,method,filter,k,store_noise){
 
   #- declare variables to pass CRAN check as suggested by data.table mainaitners
@@ -116,12 +117,7 @@ denoise_scene = function(data,method,filter,k,store_noise){
   if(method == "quantile" | method == "sd"){
     #- computes k nearest neighbours distance
     #- k = k+1 because the first column is the point itself.
-    near <- nabor::knn(data=data, k=(k+1))$nn.dists
-    data[,dist:=0] #- create a filed to add the distance
-
-    #- compute the mean distance of neighbours for each point
-    for(i in 2:ncol(near))  data[,dist := dist+near[,i]] #- total distance
-    data[,dist := dist/k] #- mean distance
+    data[,dist:=rowSums(nabor::knn(data=data, k=(k+1))$nn.dists)/k]
 
     # points above the threshold are noise
     if(method == "quantile") data[dist>stats::quantile(dist,filter),Noise := 2]
@@ -162,7 +158,7 @@ denoise_scene = function(data,method,filter,k,store_noise){
     data <- data[,Noise:=NULL]
   }
 
-  data <- lidR::LAS(data) # esport a LAS
+  data <- lidR::LAS(data) # export a LAS
   return(data)
 }
 

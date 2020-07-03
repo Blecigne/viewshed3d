@@ -115,7 +115,7 @@ sample_scene  <-  function(data,scene_radius,scene_shape,center,
       }
 
       #- down sampling with TreeLS tools
-      down <- TreeLS::tlsSample(data, TreeLS::voxelize(downsample))
+      down <- downsample_scene(data,method = "space", filter = 0.03)
       x <- lidR::plot(down,mapview=F) #- display donw sampled point cloud
     }else{
       x <- lidR::plot(data,mapview=F) #- display original scene
