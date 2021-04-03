@@ -104,7 +104,7 @@ reconstruct_ground <- function(data,ground_res,position,angular_res,
   data <- data@data[,.(X,Y,Z,Classification)] # transform data into a data.table
 
   #- separate ground and vegetation points
-  vegetation=data[Classification == 1]
+  vegetation=data[Classification != 2]
   ground=data[Classification == 2]
 
   #- compute the ground points distance to the animal location
@@ -132,47 +132,47 @@ reconstruct_ground <- function(data,ground_res,position,angular_res,
   #- if needed, with the calculated fine resolution using the lidR package tools
   if(method == "knnidw"){
     #- reconstruct the ground for the entire plot
-    dtm.all <- lidR::grid_terrain(lidR::LAS(ground[,1:4]),
+    dtm.all <- pkgcond::suppress_conditions(lidR::grid_terrain(lidR::LAS(ground[,1:4]),
                                   ground_res,
                                   lidR::knnidw(...),
-                                  full_raster = TRUE)
+                                  full_raster = TRUE))
     if(min(spacing)<ground_res){
       #- reconstruct the portion of the ground that require a fine
       #- reconstruction with the parameters calculated previously
-      dtm.fine <- lidR::grid_terrain(lidR::LAS(ground.fine.recons[,1:4]),
+      dtm.fine <- pkgcond::suppress_conditions(lidR::grid_terrain(lidR::LAS(ground.fine.recons[,1:4]),
                                      min(spacing),
                                      lidR::knnidw(...),
-                                     full_raster=full_raster)
+                                     full_raster=full_raster))
     }
   }
   if(method == "tin"){
     #- reconstruct the ground for the entire plot
-    dtm.all <- lidR::grid_terrain(lidR::LAS(ground[,1:4]),
+    dtm.all <- pkgcond::suppress_conditions(lidR::grid_terrain(lidR::LAS(ground[,1:4]),
                                   ground_res,
                                   lidR::tin(...),
-                                  full_raster = TRUE)
+                                  full_raster = TRUE))
     if(min(spacing)<ground_res){
       #- reconstruct the portion of the ground that require a fine
       #- reconstruction with the parameters calculated previously
-      dtm.fine = lidR::grid_terrain(lidR::LAS(ground.fine.recons[,1:4]),
+      dtm.fine = pkgcond::suppress_conditions(lidR::grid_terrain(lidR::LAS(ground.fine.recons[,1:4]),
                                     min(spacing),
                                     lidR::tin(...),
-                                    full_raster=full_raster)
+                                    full_raster=full_raster))
     }
   }
   if(method == "kriging"){
     #- reconstruct the ground for the entire plot
-    dtm.all <- lidR::grid_terrain(lidR::LAS(ground[,1:4]),
+    dtm.all <- pkgcond::suppress_conditions(lidR::grid_terrain(lidR::LAS(ground[,1:4]),
                                   ground_res,
                                   lidR::kriging(...),
-                                  full_raster = TRUE)
+                                  full_raster = TRUE))
     if(min(spacing)<ground_res){
       #- reconstruct the portion of the ground that require a fine
       #- reconstruction with the parameters calculated previously
-      dtm.fine <- lidR::grid_terrain(lidR::LAS(ground.fine.recons[,1:4]),
+      dtm.fine <- pkgcond::suppress_conditions(lidR::grid_terrain(lidR::LAS(ground.fine.recons[,1:4]),
                                      min(spacing),
                                      lidR::kriging(...),
-                                     full_raster=full_raster)
+                                     full_raster=full_raster))
     }
   }
 
@@ -206,7 +206,7 @@ reconstruct_ground <- function(data,ground_res,position,angular_res,
 
 
   data[,Classification := as.integer(Classification)]
-  data <- lidR::LAS(data) # export a LAS
+  data <- pkgcond::suppress_messages(lidR::LAS(data)) # export a LAS
 
   return(data)
 }

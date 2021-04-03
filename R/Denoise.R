@@ -27,7 +27,7 @@
 #' times the standard deviation away from other surveyed points. The filter
 #' parameter sets the standard deviation multiplier. Default = 4. This filter is
 #' similar to the "SOR filter" available in
-#' \href{https://www.cloudcompare.org/doc/wiki/index.php?title=SOR_filter}{CloudCompare}.}
+#' \href{https://www.cloudcompare.org}{CloudCompare}.}
 #' \subsection{\code{method = "voxel"}}{
 #' the voxel-based method considers surveyed points as noise if
 #' they are the only surveyed point within a user defined voxel volume. The
@@ -158,7 +158,7 @@ denoise_scene = function(data,method,filter,k,store_noise){
     data <- data[,Noise:=NULL]
   }
 
-  data <- lidR::LAS(data) # export a LAS
+  data <- pkgcond::suppress_messages(lidR::LAS(data)) # export a LAS
   return(data)
 }
 

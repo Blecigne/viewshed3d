@@ -42,21 +42,22 @@ a similar portion of the 3d space.
 \note{
 In most cases, a ground reconstruction should be performed before
 viewsheds computation. This can be done with
-the \code{\link[lidR]{lasground}} and \code{\link[lidR]{grid_terrain}}
-functions from the \code{\link[lidR]{lidR}} package.
+the \code{\link[lidR]{classify_ground}} and \code{\link[lidR]{grid_terrain}}
+functions from the \code{\link[lidR]{lidR-package}}.
 }
 \examples{
+\donttest{
 #- import the tree_line_plot dataset
 file = system.file("extdata", "tree_line_plot.laz", package="viewshed3d")
 tls = lidR::readLAS(file,select="xyz")
 
 #- remove noise to avoid visibility estimates error
-tls_clean <- viewshed3d::denoise_scene(tls,method="sd",
+tls_clean = viewshed3d::denoise_scene(tls,method="sd",
                                        filter=6)
 
 #- RECONSTRUCT THE GROUND
 #- classify ground points
-class=lidR::lasground(tls_clean, lidR::csf(rigidness = 1L,
+class=lidR::classify_ground(tls_clean, lidR::csf(rigidness = 1L,
                                            class_threshold = 0.1,
                                            sloop_smooth = TRUE), FALSE)
 
@@ -88,9 +89,9 @@ x=lidR::plot(cumulated,color="N_visible",size=3,
 #- add the positions
 lidR::add_treetops3d(x,sp::SpatialPointsDataFrame(positions,positions),
                      radius=0.5,col="red",add=TRUE)
-
+}
 }
 \references{
 Malkin, Z. (2016). A new method to subdivide a spherical surface
-into equal-area cells. arXiv preprint arXiv:1612.03467.
+into equal-area cells. arXiv:1612.03467.
 }

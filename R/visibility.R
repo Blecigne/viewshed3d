@@ -22,14 +22,13 @@
 #' visibility computation to avoid sightlines passing through the ground. This
 #' can be done with the \code{\link{reconstruct_ground}} function.
 #'
-#' @return If \code{store_points = FALSE}, a data.table of the visibility
+#' @return If \code{store_points = FALSE}, a list containing the data.table of the visibility
 #' (Visibility) as a function of distance to the animal location (r) is
-#' returned. If \code{store_points = TRUE}, a list containing two objects is
-#' returned. The first object is similar to the data.table returned when
-#' \code{store_points = FALSE}. The second object is a LAS class object
-#' containing the coordinates of the point cloud (X, Y, Z), the distance of
-#' each point to the animal position (r) and the class of each point: visible
-#' or not visible from the animal position (Visibility = 2 or 1, respectively).
+#' returned and the viewshed coefficient (the area under the curve of visibility
+#' as function of distance). If \code{store_points = TRUE}, a LAS containing
+#' the point cloud (X, Y, Z), the distance of each point to the animal position
+#' (r) and the class of each point: visible or not visible from the animal
+#' position (Visibility = 2 or 1, respectively) is added to the output.
 #'
 #' @details Sightline directions are computed from the method described by
 #' Malkin (2016). This ensures that every sightline explores
@@ -77,6 +76,9 @@
 #'                                     angular_res = angle,
 #'                                     scene_radius = 17, # apply cut_oof distance
 #'                                     store_points = TRUE)
+#'
+#' #- viewshed coefficient
+#' view.data$viewshed_coeffecient
 #'
 #' #- 3D plot with visible points in white and non-visible points in darkgrey
 #' x=lidR::plot(view.data$points,color="Visibility",colorPalette = c("grey24","white"))
@@ -185,19 +187,23 @@ visibility <- function(data,position,angular_res,scene_radius,store_points){
   near[, r := round(r,2)]
   near <- near[, .(N = .N), keyby = r]
 
-  #- add distances from 0 to the minimum recorded
+  #- add distances from 0 to the minimum recorded and form max to scene_radius
   start <- data.table::data.table(r = seq(0,min(near$r),0.1), N = 0)
-  near <- rbind(start, near)
+  end <- data.table::data.table(r = seq(max(near$r),scene_radius,0.1), N = 0)
+  near <- rbind(start, near , end)
 
   #- compute visibility
   near[, visibility := (1-cumsum(N)/n_dir)*100]
   near[,N:=NULL]
 
   if(store_points==T){
-    data <- lidR::LAS(data) # export a LAS
-    ret <- list(visibility=near,points=data)
-    return(ret)
+    return(list(visibility=near,
+                points=pkgcond::suppress_messages(lidR::LAS(data)), # export a LAS,
+                viewshed_coeffecient = pracma::trapz(x = near$r, y = near$visibility)
+          ))
   }else{
-    return(near)
+    return(list(visibility=near,
+                viewshed_coeffecient = pracma::trapz(x = near$r, y = near$visibility)
+    ))
   }
 }

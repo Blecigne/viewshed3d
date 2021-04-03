@@ -23,7 +23,7 @@
 #' @param downsample numeric. Enables the user to downsample the point cloud before
 #' visualizing it for scene center manual selection (if no \code{center} is
 #' provided). Defines the voxel resolution within which a single point of the
-#' input scene will be kept, see \code{\link[TreeLS]{tlsSample}} for more details.
+#' input scene will be kept.
 #' \code{downsample = 0} desable downsampling. Default is 0 if the scene contains less
 #' than 5e6 surveyed points or 0.1 if the scene contains more than 5e6 surveyed points.
 #' @param messages logical. Disables the messages and message box when manually
@@ -71,7 +71,7 @@
 #'
 #' lidR::plot(reshaped)
 #'
-#' \donttest{
+#' if (interactive()){
 #' #- manual selection of the center
 #' reshaped <- viewshed3d::sample_scene(tls,scene_radius = 4,
 #'                                      scene_shape = "circ")
@@ -179,7 +179,7 @@ sample_scene  <-  function(data,scene_radius,scene_shape,center,
                Y=Y-center[2],
                Z=Z-center[3])]
 
-  data <- lidR::LAS(data) # export a LAS
+  data <- pkgcond::suppress_messages(lidR::LAS(data)) # export a LAS
 
   return(data)
 }

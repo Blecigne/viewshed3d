@@ -43,7 +43,7 @@
 #' tls = lidR::readLAS(file,select="xyz")
 #'
 #' #- remove noise to avoid visibility estimates error
-#' tls_clean <- viewshed3d::denoise_scene(tls,method="sd",
+#' tls_clean = viewshed3d::denoise_scene(tls,method="sd",
 #'                                        filter=6)
 #'
 #' #- RECONSTRUCT THE GROUND
@@ -209,6 +209,6 @@ viewsheds=function(data,positions,angular_res,vox_res,cut_off,pb){
     vox_dat[dat,N_visible := N_visible+1] #- add 1 to each joint voxels
   }
 
-  vox_dat <- lidR::LAS(vox_dat) # export a LAS
+  vox_dat <- pkgcond::suppress_messages(lidR::LAS(vox_dat)) # export a LAS
   return(vox_dat)
 }

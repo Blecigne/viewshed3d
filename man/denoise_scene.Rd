@@ -33,34 +33,35 @@ Filters isolated points from a point cloud
 }
 \details{
 \subsection{\code{method = "quantile"}}{
-method = "quantile": the quantile-based method computes the distance of the k
+the quantile-based method computes the distance of the k
 nearest neighbours for each surveyed point and considers points that fall in
 the last user defined quantile as noise. If quantile is used as the filtering
 method, the default is set to = 0.999.}
 \subsection{\code{method = "sd"}}{
-method = "sd": the standard deviation-based method computes the average
+the standard deviation-based method computes the average
 distance of the k nearest neighbours of each surveyed point and considers
 points as noise if they are more than the average distance plus a number of
 times the standard deviation away from other surveyed points. The filter
 parameter sets the standard deviation multiplier. Default = 4. This filter is
 similar to the "SOR filter" available in
-\href{https://www.cloudcompare.org/doc/wiki/index.php?title=SOR_filter}{CloudCompare}.}
+\href{https://www.cloudcompare.org}{CloudCompare}.}
 \subsection{\code{method = "voxel"}}{
-method = "voxel": the voxel-based method considers surveyed points as noise if
+the voxel-based method considers surveyed points as noise if
 they are the only surveyed point within a user defined voxel volume. The
 \code{filter} parameter sets the voxel size (i.e., voxel side length).
 Default = 0.5.}
 }
 \examples{
+\donttest{
 #- import the tree_line_plot dataset
 file <- system.file("extdata", "tree_line_plot.laz", package="viewshed3d")
-data <- lidR::readLAS(file,select="xyz")
+tls <- lidR::readLAS(file,select="xyz")
 
 #- remove duplicated points
-data <- lidR::lasfilterduplicates(data)
+tls <- lidR::filter_duplicates(tls)
 
 #- filter noise with the quantile base method
-data <- viewshed3d::denoise_scene(data,
+data <- viewshed3d::denoise_scene(tls,
                                   method="quantile",
                                   filter=0.999,
                                   k=5,
@@ -69,7 +70,7 @@ data <- viewshed3d::denoise_scene(data,
 lidR::plot(data,color="Noise",colorPalette=c("white","red")) # plot
 
 #- filter noise with the standard deviation based method
-data <- viewshed3d::denoise_scene(data,
+data <- viewshed3d::denoise_scene(tls,
                                   method="sd",
                                   filter=4,
                                   k=5,
@@ -78,10 +79,10 @@ data <- viewshed3d::denoise_scene(data,
 lidR::plot(data,color="Noise",colorPalette=c("white","red")) # plot
 
 #- filter noise with the voxel based method
-data <- viewshed3d::denoise_scene(data,
+data <- viewshed3d::denoise_scene(tls,
                                   method="voxel",
                                   filter=0.5,
                                   store_noise = TRUE)
 lidR::plot(data,color="Noise",colorPalette=c("white","red")) # plot
-
+}
 }

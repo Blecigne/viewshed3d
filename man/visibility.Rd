@@ -24,14 +24,13 @@ visibility analyses.}
 with visible and not visible points classified (see details).}
 }
 \value{
-If \code{store_points = FALSE}, a data.table of the visibility
+If \code{store_points = FALSE}, a list containing the data.table of the visibility
 (Visibility) as a function of distance to the animal location (r) is
-returned. If \code{store_points = TRUE}, a list containing two objects is
-returned. The first object is similar to the data.table returned when
-\code{store_points = FALSE}. The second object is a LAS class object
-containing the coordinates of the point cloud (X, Y, Z), the distance of
-each point to the animal position (r) and the class of each point: visible
-or not visible from the animal position (Visibility = 2 or 1, respectively).
+returned and the viewshed coefficient (the area under the curve of visibility
+as function of distance). If \code{store_points = TRUE}, a LAS containing
+the point cloud (X, Y, Z), the distance of each point to the animal position
+(r) and the class of each point: visible or not visible from the animal
+position (Visibility = 2 or 1, respectively) is added to the output.
 }
 \description{
 Computes visibility from a user-defined location with
@@ -50,6 +49,7 @@ visibility computation to avoid sightlines passing through the ground. This
 can be done with the \code{\link{reconstruct_ground}} function.
 }
 \examples{
+\donttest{
 #- import the tree_line_plot dataset
 file <- system.file("extdata", "tree_line_plot.laz", package="viewshed3d")
 tls <- lidR::readLAS(file)
@@ -63,7 +63,7 @@ tls_clean <- viewshed3d::denoise_scene(tls,method="sd",
 
 
 #- class ground and vegetation points
-class <- lidR::lasground(tls_clean, lidR::csf(rigidness = 1L,
+class <- lidR::classify_ground(tls_clean, lidR::csf(rigidness = 1L,
                                               class_threshold = 0.2,
                                               sloop_smooth = FALSE))
 
@@ -84,9 +84,11 @@ view.data <- viewshed3d::visibility(data = recons,
                                     scene_radius = 17, # apply cut_oof distance
                                     store_points = TRUE)
 
+#- viewshed coefficient
+view.data$viewshed_coeffecient
+
 #- 3D plot with visible points in white and non-visible points in darkgrey
-x=lidR::plot(view.data$points,add=TRUE,color="Visibility",
-             colorPalette = c("grey24","white"))
+x=lidR::plot(view.data$points,color="Visibility",colorPalette = c("grey24","white"))
 
 #- add animal position to the plot
 position=data.frame(X=center[1],Y=center[2],Z=center[3])
@@ -96,9 +98,10 @@ lidR::add_treetops3d(x,sp::SpatialPointsDataFrame(position,position),
 #- plot the visibility as function of distance
 plot(view.data$visibility$r,view.data$visibility$visibility,
      type="l",ylim=c(0,100),lwd=4)
+}
 
 }
 \references{
 Malkin, Z. (2016). A new method to subdivide a spherical surface
-into equal-area cells. arXiv preprint arXiv:1612.03467.
+into equal-area cells. arXiv:1612.03467.
 }

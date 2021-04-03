@@ -83,6 +83,6 @@ downsample_scene <- function(data,method,filter){
     data[,':='(X_vox = NULL,Y_vox = NULL,Z_vox = NULL,row = NULL)]
   }
 
-  data <- lidR::LAS(data) # export a LAS
+  data <- pkgcond::suppress_messages(lidR::LAS(data)) # export a LAS
   return(data)
 }
