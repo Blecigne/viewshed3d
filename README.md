@@ -1,4 +1,11 @@
-# viewshed3d
+# Install viewshed3d on your computer
+
+The viewshed3d package is presently not available on CRAN. You can install it using the following command in the R console:
+``
+remotes::install_github('Blecigne/viewshed3d')
+``
+
+# Overview of viewshed3d
 ## Tools to compute visibility in 3D point clouds of ecosystems
 
 For many animals, the ability to visually assess the environment and detect approaching predators is an important
