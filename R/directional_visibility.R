@@ -242,7 +242,7 @@ d_visibility <- function(data,position,angular_res,elevation_range,azimuth_range
   near[,N:=NULL]
 
   if(store_points==T){
-    data <- pkgcond::suppress_messages(lidR::LAS(data)) # export a LAS
+    data <- pkgcond::suppress_messages(lidR::LAS(data, check = FALSE)) # export a LAS
     ret <- list(visibility=near,points=data)
     return(ret)
   }else{

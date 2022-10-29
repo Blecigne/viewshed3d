@@ -206,7 +206,7 @@ reconstruct_ground <- function(data,ground_res,position,angular_res,
 
 
   data[,Classification := as.integer(Classification)]
-  data <- pkgcond::suppress_messages(lidR::LAS(data)) # export a LAS
+  data <- pkgcond::suppress_messages(lidR::LAS(data, check = FALSE)) # export a LAS
 
   return(data)
 }

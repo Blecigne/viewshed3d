@@ -209,6 +209,6 @@ viewsheds=function(data,positions,angular_res,vox_res,cut_off,pb){
     vox_dat[dat,N_visible := N_visible+1] #- add 1 to each joint voxels
   }
 
-  vox_dat <- pkgcond::suppress_messages(lidR::LAS(vox_dat)) # export a LAS
+  vox_dat <- pkgcond::suppress_messages(lidR::LAS(vox_dat, check = FALSE)) # export a LAS
   return(vox_dat)
 }

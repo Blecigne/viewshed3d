@@ -158,7 +158,7 @@ denoise_scene = function(data,method,filter,k,store_noise){
     data <- data[,Noise:=NULL]
   }
 
-  data <- pkgcond::suppress_messages(lidR::LAS(data)) # export a LAS
+  data <- pkgcond::suppress_messages(lidR::LAS(data, check = FALSE)) # export a LAS
   return(data)
 }
 
