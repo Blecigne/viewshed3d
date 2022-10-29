@@ -1,6 +1,6 @@
 Package: viewshed3d
 Title: Compute Viewshed in 3D Point Clouds of Ecosystems
-Version: 4.0.0
+Version: 4.0.1
 Authors@R: 
     c(person(given = "Bastien",
            family = "Lecigne",
