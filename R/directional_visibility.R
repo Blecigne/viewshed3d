@@ -242,9 +242,14 @@ d_visibility <- function(data,position,angular_res,elevation_range,azimuth_range
   near[,N:=NULL]
 
   if(store_points==T){
-    data <- pkgcond::suppress_messages(lidR::LAS(data, check = FALSE)) # export a LAS
-    ret <- list(visibility=near,points=data)
-    return(ret)
+
+    las = pkgcond::suppress_messages(lidR::LAS(data[,1:3]))
+    las = lidR::add_lasattribute_manual(las = las, x = data$r,name = "r",desc = "distance to the scene center", type = "float")
+    las = lidR::add_lasattribute_manual(las = las, x = data$Visibility,name = "Visibility",desc = "is the point visible", type = "int")
+   
+    return(
+      list(visibility=near,points=las)
+    )
   }else{
     return(near)
   }

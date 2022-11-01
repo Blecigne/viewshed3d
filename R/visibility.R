@@ -197,8 +197,13 @@ visibility <- function(data,position,angular_res,scene_radius,store_points){
   near[,N:=NULL]
 
   if(store_points==T){
+
+    las = pkgcond::suppress_messages(lidR::LAS(data[,1:3]))
+    las = lidR::add_lasattribute_manual(las = las, x = data$r,name = "r",desc = "distance to the scene center", type = "float")
+    las = lidR::add_lasattribute_manual(las = las, x = data$Visibility,name = "Visibility",desc = "is the point visible", type = "int")
+   
     return(list(visibility=near,
-                points=pkgcond::suppress_messages(lidR::LAS(data), check = FALSE), # export a LAS,
+                points=las, # export a LAS,
                 viewshed_coeffecient = pracma::trapz(x = near$r, y = near$visibility)
           ))
   }else{
